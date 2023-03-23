@@ -37,6 +37,14 @@
 .bg-primary-custom{
     background-color: #990000;
 }
+
+.header_top_logo{
+    background-image: url(/Bible4All/images/Bible4all.jpg); 
+    background-size: 1024px 310px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 310px;
+}
     </style> 
    </head>
    <body>      
@@ -54,20 +62,19 @@
                </div>
            </div>
            <div  class="row">
-               <div class="col-sm-6"
-                    <div style="background-image: url(/Bible4All/images/Bible4all.jpg); width: 1024px; height: 310px;background-repeat: none;">
+               <div class="col-sm-12" center-block>
+                    <div class="header_top_logo">
                         <form class="form-inline" action="Search.php" method="POST">
-                          <div class="form-group mb-2">
-                              <p/><p/>
+                          <div class="form-group mb-12">
+                              <br/>
                               <input class="form-control" placeholder="bibleverse or keyword ; biblebook(optional) (E.g. In the beginning; John)" name="searchfield" type="text" style="width:100%;"/>
                           </div>
                           <button class="btn btn-primary-search" onclick="this.form.submit()">Search</button>
                         </form>
-                   </div>
+                    </div>
                </div>
            </div>
            <div>
                <p></p>
            </div>
-           <div class="row">            
-           
+           <div class="row">          
