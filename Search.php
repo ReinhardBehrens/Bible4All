@@ -59,6 +59,111 @@
                                 $biblechaptersbyid[] = $row_chapters_list["Id"];
                             }                      
                         }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
+// Three queries to get total row count
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
+$page_maxumum_results = 35;
+$row_total_number_rows = 0;
+
+////////******************************************************************************************************************************//////
+    $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST = "SELECT * FROM BibleVerses WHERE CONTAINS(VerseContent, '\"". implode(" " ,$searchkeywords)."\"')";
+    if($debug==1){ echo "\$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST : ".$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST; }
+    $params = array();
+    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
+    $result_bible_verses_ft = sqlsrv_query( $conn, $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST , $params, $options );
+    $row_count_full_text_search_query = sqlsrv_num_rows($result_bible_verses_ft);
+    $row_total_number_rows = $row_total_number_rows + $row_count_full_text_search_query;
+    if($debug==1){ echo "\$row_total_number_rows [0]: $row_total_number_rows";}
+////////******************************************************************************************************************************//////
+    if($biblebookid > 0 )
+    {
+        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE BibleChapterId IN(". implode(",", $biblechaptersbyid).") AND ";
+        if($debug==1){echo "<br/>Basic with BibleChapterId $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
+    }
+    else
+    {
+        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE ";
+        if($debug==1){echo "<br/>Basic $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
+    }
+
+    $SELECT_SEARCH_QUERY_OR_OPERATION="";
+    $current_count=0;
+
+    foreach($searchkeywords as $value)
+    {
+        $select_bible_book_name = "";
+        if($debug==1){echo "<br/>-----Building query with following keyword: ". $value."-----<br/>";}
+        if($current_count == 0)
+        {
+            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+            if($debug==1){echo "<br/>=================------\$current_count==0 so building first part of the select query without the AND-----";}
+            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." VerseContent LIKE '%".$value."%'";
+            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+        }
+        else
+        {
+            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+            if($debug==1){echo "<br/>=================-----\$current_count>0 so building rest of the select query with AND-----<br/>";}                            
+            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." AND VerseContent LIKE '%".$value."%'" ;
+            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+        }
+
+        $current_count++;
+    }
+    $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." ";
+    if($debug==1){echo "\$SELECT_SEARCH_QUERY_OR_OPERATION : <br/>".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>"; } 
+
+    $params = array();
+    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
+    $result_bible_verses = sqlsrv_query( $conn, $SELECT_SEARCH_QUERY_AND_OPERATION , $params, $options );
+    $row_count_search_query_AND_search= sqlsrv_num_rows($result_bible_verses);
+    $row_total_number_rows = $row_total_number_rows + $row_count_search_query_AND_search;
+    if($debug==1){ echo "\$row_total_number_rows [1]: $row_total_number_rows";}
+////////******************************************************************************************************************************//////
+    if($biblebookid > 0 )
+    {
+        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE BibleChapterId IN(". implode(",", $biblechaptersbyid).") AND ";
+        if($debug==1){echo "<br/>Basic with BibleChapterId $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
+    }
+    else
+    {
+        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE ";
+        if($debug==1){echo "<br/>Basic $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
+    }
+
+    $current_count=0;
+
+    foreach($searchkeywords as $value)
+    {
+        $select_bible_book_name = "";
+        if($debug==1){echo "<br/>-----Building query with following keyword: ". $value."-----<br/>";}
+        if($current_count == 0)
+        {
+            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+            if($debug==1){echo "<br/>=================------\$current_count==0 so building first part of the select query without the AND-----";}
+            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." VerseContent LIKE '%".$value."%'";
+            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+        }
+        else
+        {
+            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+            if($debug==1){echo "<br/>=================-----\$current_count>0 so building rest of the select query with AND-----<br/>";}                            
+            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." OR VerseContent LIKE '%".$value."%'" ;
+            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
+        }
+
+        $current_count++;
+    }
+    $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." ";
+    if($debug==1){echo "\$SELECT_SEARCH_QUERY_OR_OPERATION : <br/>".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>"; } 
+
+    $params = array();
+    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
+    $result_bible_verses = sqlsrv_query( $conn, $SELECT_SEARCH_QUERY_AND_OPERATION , $params, $options );  
+    $row_count_search_query_OR_search= sqlsrv_num_rows($result_bible_verses);
+    $row_total_number_rows = $row_total_number_rows + $row_count_search_query_OR_search;
+    if($debug==1){ echo "\$row_total_number_rows [2]: $row_total_number_rows";}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Full Text Search using Contains   
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        

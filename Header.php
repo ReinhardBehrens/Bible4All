@@ -1,6 +1,15 @@
 <?php
+/*
+
+ * Bible4All is a free and open source distribution of Bible software for the Christian Community (Exclusive)
+ * The software is developed for Jesus Christ and for the use of His church to further the gospel of Jesus Christ.
+ * 
+ * The software should be used responsibly and for the furtherance of the gospel of peace between God and man 
+ * via Jesus Christ. 
+ *
+ */
     session_start();
-    $debug=0;
+    $debug=1;
 ?>
 <!DOCTYPE html>
 <html lang="en">
