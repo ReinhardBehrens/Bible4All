@@ -63,6 +63,127 @@
                         
                     $amount_of_keywords = sizeof($searchkeywords);
 
+                    // DO FULL TEXT SEARCH TO NARROW EXPLICID SEARCHES
+                    // Get all the constrained narrowed down bible verses
+                    $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST = "SELECT * FROM BibleVerses WHERE CONTAINS(VerseContent, '\"". implode(" " ,$searchkeywords)."\"')";
+                    if($debug==1){ echo "\$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST : ".$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST; }
+                    $params = array();
+                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
+                    $result_bible_verses_ft = sqlsrv_query( $conn, $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST , $params, $options );
+                    
+                    while($row = sqlsrv_fetch_array($result_bible_verses_ft, SQLSRV_FETCH_ASSOC))
+                    {
+                        try 
+                        {
+                            $SELECT_BIBLE_VERSION = "SELECT * FROM BibleVersion WHERE Id=".$row["BibleVersionId"]."";
+                            if($debug==1){echo "-----SQL QUERY>".$SELECT_BIBLE_VERSION."<br/>";}
+                            $params = array();
+                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+                            $result_bible_version_byid = sqlsrv_query($conn, $SELECT_BIBLE_VERSION , $params, $options);
+                            $bible_version_for_verse = "";
+                            while($row_versionid = sqlsrv_fetch_array($result_bible_version_byid, SQLSRV_FETCH_ASSOC))  {
+                                $bible_version_for_verse = $row_versionid["Version"];
+                            }
+                            
+                            $SELECT_GET_BIBLE_CHAPTER_AND_ID = "SELECT * FROM BibleChapter WHERE Id=".$row["BibleChapterId"];
+                            if($debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_CHAPTER_AND_ID."<br/>";}
+                            $params = array();
+                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+                            $result_bible_chapter_getid = sqlsrv_query($conn, $SELECT_GET_BIBLE_CHAPTER_AND_ID , $params, $options);
+                            $row_count_bible_chapter = sqlsrv_num_rows($result_bible_chapter_getid);
+
+                            if($row_count_bible_chapter=1)
+                            {
+                                while($row_chapterid = sqlsrv_fetch_array($result_bible_chapter_getid, SQLSRV_FETCH_ASSOC))  {
+                                    $SELECT_GET_BIBLE_BOOK = "SELECT * FROM BibleBook WHERE Id=".$row_chapterid["BibleBookId"];
+                                    if($debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_BOOK."<br/>";}
+                                    $params = array();
+                                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+                                    $result_bible_biblebook_details = sqlsrv_query($conn, $SELECT_GET_BIBLE_BOOK , $params, $options);
+                                    $row_count_bookinfo = sqlsrv_num_rows($result_bible_biblebook_details);
+                                    while($row_bookdetails = sqlsrv_fetch_array($result_bible_biblebook_details, SQLSRV_FETCH_ASSOC)) 
+                                    {                                        
+                                      if(strlen($row["VerseContent"])<=10)
+                                      {
+                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." - ".$row["VerseNr"]." ". substr($row["VerseContent"],0,10) ."... (".$bible_version_for_verse.")</a>"; 
+                                      }
+                                      else 
+                                      {
+                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." - ".$row["VerseNr"]." ". substr($row["VerseContent"],0,25) ."... (".$bible_version_for_verse.")</a>";   
+                                      }
+                                    }
+                                }
+                            }
+                        }
+                        catch(Exception $e)
+                        {
+                            echo "Error occured: " + $e;
+                        }
+                        //$array_of_bible_verse fix in display the \s\. 
+                        $array_of_bible_verse = preg_split("/\s+/",preg_replace('/[.]/', ' .', $row["VerseContent"]));
+
+                        //                       TODO: Fix regex space and fullstop to be replaced with only full stop. 
+                        // Replacing $keyword
+                        $tmp=$searchkeywords;
+
+                        // Replacing $keyword
+                        if($debug==1){ echo "<br/>-----KEYWORDS". implode(" ", $tmp)."-----<br/>";}
+                        if($debug==1){ echo sizeof($array_of_bible_verse)." Size Array....<br/>";}
+
+                        $searchkeywords_lowercase= array();
+                        foreach($searchkeywords as $keyword)
+                        {
+                            $searchkeywords_lowercase[] = strtolower(trim($keyword));
+                        }
+
+                        for($i=0 ; $i < sizeof($array_of_bible_verse); $i++)
+                        {                            
+                            try
+                            {
+                                $lower_case_verse_word = strtolower($array_of_bible_verse[$i]);
+                                if($debug==1){ echo "[$i]Lowercase for ->>>> ".$lower_case_verse_word."<<<<- in [".implode(" ",$searchkeywords_lowercase)."]<br/>";}
+                                $array_search_result = array_search($lower_case_verse_word, $searchkeywords_lowercase);
+                                if($debug==1){ echo "[$i]----->".$array_search_result."<-----Array Search Result <br/>";} 
+                                if($array_search_result===false)
+                                {
+                                  $outputverse[] = " ".preg_replace('/\s\./', '.', $array_of_bible_verse[$i])." ";
+                                }
+                                else if($array_search_result==0 || $array_search_result > 0) 
+                                {
+                                  if($debug==1){ echo "[--|".preg_replace('/\s\./', '.', $array_of_bible_verse[$i])."|-- FOUND IN KW]"; } // TODO : Fix this so that it displays the characters correctly without the space only the .
+                                  $outputverse[] = " <b>".preg_replace('/\s\./', '.', $array_of_bible_verse[$i])."</b> ";
+                                }
+                            }
+                            catch(Exception $e)
+                            {
+                                
+                            }
+                        }  
+
+                        // Build HTML string
+                        echo "<p><a href=\"\" ><sup>".$row["VerseNr"]."</sup></a>". implode("", $outputverse)."</div>";
+                        unset($outputverse);
+                    }
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     // Search bible verses without the limitation of books
                     // AND Search then OR Search
                     // Build Select Queries
@@ -70,12 +191,12 @@
                     if($biblebookid > 0 )
                     {
                         $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE BibleChapterId IN(". implode(",", $biblechaptersbyid).") AND ";
-                        if($debug==1){echo "Basic with BibleChapterId $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
+                        if($debug==1){echo "<br/>Basic with BibleChapterId $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
                     }
                     else
                     {
                         $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE ";
-                        if($debug==1){echo "Basic $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
+                        if($debug==1){echo "<br/>Basic $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
                     }
 
                     $SELECT_SEARCH_QUERY_OR_OPERATION="";

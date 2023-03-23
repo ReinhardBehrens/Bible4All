@@ -1,6 +1,6 @@
 <?php
             $serverName = "REIN\\SQLEXPRESS"; //serverName\instanceName
-            $connectionInfo = array( "Database"=>"BibleForAllServerAppv1.Server.Data", "UID"=>"sa", "PWD"=>"password");
+            $connectionInfo = array( "Database"=>"BibleForAllServerAppv1.Server.Data", "UID"=>"sa", "PWD"=>"password", "CharacterSet" =>"UTF-8");
             $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
             if( $conn ) {

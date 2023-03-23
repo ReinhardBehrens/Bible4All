@@ -40,30 +40,30 @@
     </style> 
    </head>
    <body>      
-       <div class="container">
-           <div  class="row align-items-start">
-               <div class="col-auto">
+       <div class="container-fluid">
+           <div  class="row">
+               <div class="col-sm-6">
                 <nav>
                     <a href="./">Home</a> |
                     <a href="./ParallelView/">Parallel View</a> |
                     <a href="./PDFs/">PDF's</a> |
                     <a href="./About/">About</a>
                     <a href="./test_search_function.php">test_search_function</a>
+                    <a href="./modeling/index.html">index modelling</a> 
                 </nav>
                </div>
            </div>
-           <div class="container-fluid p-5 bg-danger bg-primary-custom text-white text-center">
-                <h1>My First Bootstrap Page</h1>
-                <p>Resize this responsive page to see the effect!</p> 
-           </div>
-           <div  class="row align-items-start">
-               <div class="col">
-                    <form class="form-inline" action="Search.php" method="POST">
-                      <div class="form-group mb-2">
-                          <input class="form-control" placeholder="bibleverse or keyword ; biblebook(optional) (E.g. In the beginning; John)" name="searchfield" type="text" style="width:100%;"/>
-                      </div>
-                      <button class="btn btn-primary-search" onclick="this.form.submit()">Search</button>
-                    </form>               
+           <div  class="row">
+               <div class="col-sm-6"
+                    <div style="background-image: url(/Bible4All/images/Bible4all.jpg); width: 1024px; height: 310px;background-repeat: none;">
+                        <form class="form-inline" action="Search.php" method="POST">
+                          <div class="form-group mb-2">
+                              <p/><p/>
+                              <input class="form-control" placeholder="bibleverse or keyword ; biblebook(optional) (E.g. In the beginning; John)" name="searchfield" type="text" style="width:100%;"/>
+                          </div>
+                          <button class="btn btn-primary-search" onclick="this.form.submit()">Search</button>
+                        </form>
+                   </div>
                </div>
            </div>
            <div>

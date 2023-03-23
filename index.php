@@ -283,7 +283,7 @@
 <div class="container">
     
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <form method="POST" action="">
                 <select class="form-select" name="bibleversion" onchange="this.form.submit()">
                 <?php
@@ -296,7 +296,7 @@
                 </select> 
             </form>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <form method="POST" action="">
                 <select class="form-select" name="biblebook" onchange="this.form.submit()">
                 <?php
@@ -309,7 +309,7 @@
                 </select> 
             </form>
         </div>
-        <div class="col-sm-1">
+        <div class="col-sm-4">
             <form method="POST" action="">
                 <select class="form-select" name="biblechapter" onchange="this.form.submit()">
                 <?php
