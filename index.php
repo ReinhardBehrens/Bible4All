@@ -13,12 +13,12 @@
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             // $_GET POST from Search Page
             ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Get posts from the search page a lookup and set the $_SESSION variables based on search
+            /* Get posts from the search page a lookup and set the $_SESSION variables based on search        */
             if(isset($_GET["VersionId"]))
             {
                 if($debug==1){echo "Version ID - ".$_GET["VersionId"]."<br/>";}
                 $SELECT_BIBLE_VERSION_FOR_SESSION = "SELECT Name from BibleVersion Where Id=".$_GET["VersionId"];
-                
+
                 // Get biblebook               
                 if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_VERSION_FOR_SESSION>".$SELECT_BIBLE_VERSION_FOR_SESSION."<br/>";}
                 $params = array();

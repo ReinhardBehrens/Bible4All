@@ -9,7 +9,7 @@
  *
  */
     session_start();
-    $debug=1;
+    $debug=0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,26 +48,27 @@
 }
 
 .header_top_logo{
-    background-image: url(/Bible4All/images/Bible4all.jpg); 
-    background-size: 1024px 310px;
+    background-image: url(./images/Bible4All.jpg); 
+    background-size: 1920px 306px;
     background-repeat: no-repeat;
     background-position: center center;
     height: 310px;
 }
     </style> 
    </head>
-   <body>      
+   <body>  
        <div class="container-fluid">
            <div  class="row">
                <div class="col-sm-6">
-                <nav>
-                    <a href="./">Home</a> |
-                    <a href="./ParallelView/">Parallel View</a> |
-                    <a href="./PDFs/">PDF's</a> |
-                    <a href="./About/">About</a>
-                    <a href="./test_search_function.php">test_search_function</a>
-                    <a href="./modeling/index.html">index modelling</a> 
-                </nav>
+                    <nav>
+                        <a href="./">Home</a> |
+                        <a href="./ParallelView/">Comparative Bible Study</a> |
+                        <a href="./pdfs.php">PDF's</a> |
+                        <a href="./statementoffaith.php">Statement of Faith</a> |
+                        <a href="./about.php">About</a> |
+                        <a href="./test_search_function.php">test_search_function</a>
+                        <a href="./modeling/index.html">index modelling</a> 
+                    </nav>
                </div>
            </div>
            <div  class="row">
