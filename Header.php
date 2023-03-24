@@ -47,13 +47,56 @@
     background-color: #990000;
 }
 
-.header_top_logo{
-    background-image: url(./images/Bible4All.jpg); 
-    background-size: 1920px 306px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    height: 310px;
+@media all and (max-width: 1920px) {
+    .header_top_logo{
+        background-image: url(./images/Bible4All.jpg); 
+        background-size: 1920px 306px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 310px;
+    }
 }
+
+@media all and (max-width: 1600px) {
+    .header_top_logo{
+        background-image: url(./images/Bible4All.jpg); 
+        background-color: #990000;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 310px;
+    }    
+}
+
+@media all and (max-width: 1200px) {
+    .header_top_logo{
+        background-image: url(./images/Bible4All.jpg); 
+        background-color: #990000;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 310px;
+    }    
+}
+
+@media all and (max-width: 800px) {
+    .header_top_logo{
+        background-image: url(./images/Bible4All.jpg); 
+        background-color: #990000;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 310px;
+    }    
+}
+
+@media all and (max-width: 800px) {
+    .header_top_logo{
+        background-image: url(./images/Bible4All.jpg); 
+        background-color: #990000;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 310px;
+    }    
+}
+
     </style> 
    </head>
    <body>  
@@ -63,11 +106,10 @@
                     <nav>
                         <a href="./">Home</a> |
                         <a href="./ParallelView/">Comparative Bible Study</a> |
-                        <a href="./pdfs.php">PDF's</a> |
+                        <a href="./pdfs.php">Bible in PDF</a> |
                         <a href="./statementoffaith.php">Statement of Faith</a> |
                         <a href="./about.php">About</a> |
                         <a href="./test_search_function.php">test_search_function</a>
-                        <a href="./modeling/index.html">index modelling</a> 
                     </nav>
                </div>
            </div>
