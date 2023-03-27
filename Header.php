@@ -109,7 +109,8 @@
                         <a href="./pdfs.php">Bible in PDF</a> |
                         <a href="./statementoffaith.php">Statement of Faith</a> |
                         <a href="./about.php">About</a> |
-                        <a href="./test_search_function.php">test_search_function</a>
+                        <a href="./test_search_function.php">test_search_function</a> |                         
+                        <a href="./simpleregexmatch.php">simpleregexmatch</a>
                     </nav>
                </div>
            </div>

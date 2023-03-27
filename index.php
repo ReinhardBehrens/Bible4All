@@ -14,84 +14,106 @@
             // $_GET POST from Search Page
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             /* Get posts from the search page a lookup and set the $_SESSION variables based on search        */
-            if(isset($_GET["VersionId"]))
+            if(isset($_POST["biblechapter"]) || isset($_POST["biblebook"]) || isset($_POST["bibleversion"]) || isset($_POST["bibleversion"]))
             {
-                if($debug==1){echo "Version ID - ".$_GET["VersionId"]."<br/>";}
-                $SELECT_BIBLE_VERSION_FOR_SESSION = "SELECT Name from BibleVersion Where Id=".$_GET["VersionId"];
-
-                // Get biblebook               
-                if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_VERSION_FOR_SESSION>".$SELECT_BIBLE_VERSION_FOR_SESSION."<br/>";}
-                $params = array();
-                $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                $result_bible_version = sqlsrv_query($conn, $SELECT_BIBLE_VERSION_FOR_SESSION , $params, $options);
-
-                while($row_version = sqlsrv_fetch_array($result_bible_version, SQLSRV_FETCH_ASSOC)) 
+                if(isset($_GET["ChapterId"]))
                 {
-                    $_SESSION["SELECTED_BIBLE_VERSION"] = $row_version["Name"];
+                    if($debug==1){ echo "Unset ChapterID ".$_GET["ChapterId"]; }
+                    unset($_GET["ChapterId"]);
                 }
-                
-                if(!isset($_SESSION["SELECTED_BIBLE_VERSION"]))
+
+                if(isset($_GET["Bookid"]))
                 {
-                    $_SESSION["SELECTED_BIBLE_VERSION"]="King James Version";
+                    if($debug==1){ echo "Unset Bookid ".$_GET["Bookid"]; }
+                    unset($_GET["Bookid"]);
+                }
+
+                if(isset($_GET["VerseNr"]))
+                {
+                    if($debug==1){ echo "Unset VerseNr".$_GET["VerseNr"]; }
+                    unset($_GET["VerseNr"]);
+                }      
+            }
+            else
+            {
+                if(isset($_GET["VersionId"]))
+                {
+                    if($debug==1){echo "Version ID - ".$_GET["VersionId"]."<br/>";}
+                    $SELECT_BIBLE_VERSION_FOR_SESSION = "SELECT Name from BibleVersion Where Id=".$_GET["VersionId"];
+
+                    // Get biblebook               
+                    if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_VERSION_FOR_SESSION>".$SELECT_BIBLE_VERSION_FOR_SESSION."<br/>";}
+                    $params = array();
+                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+                    $result_bible_version = sqlsrv_query($conn, $SELECT_BIBLE_VERSION_FOR_SESSION , $params, $options);
+
+                    while($row_version = sqlsrv_fetch_array($result_bible_version, SQLSRV_FETCH_ASSOC)) 
+                    {
+                        $_SESSION["SELECTED_BIBLE_VERSION"] = $row_version["Name"];
+                    }
+
+                    if(!isset($_SESSION["SELECTED_BIBLE_VERSION"]))
+                    {
+                        $_SESSION["SELECTED_BIBLE_VERSION"]="King James Version";
+                    }
+                }
+
+                if(isset($_GET["Bookid"]))
+                {
+                    if($debug==1){echo "Bookid - ". $_GET["Bookid"]."<br/>";}
+                    $SELECT_BIBLE_BOOK_FOR_SESSION = "SELECT Name FROM BibleBook where Id=".$_GET["Bookid"];
+                    if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_BOOK_FOR_SESSION>".$SELECT_BIBLE_BOOK_FOR_SESSION."<br/>";}
+                    $params = array();
+                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+                    $result_bible_book = sqlsrv_query($conn, $SELECT_BIBLE_BOOK_FOR_SESSION , $params, $options);
+
+                    while($row_book = sqlsrv_fetch_array($result_bible_book, SQLSRV_FETCH_ASSOC)) 
+                    {
+                        $_SESSION["SELECTED_BIBLE_BOOK"] = $row_book["Name"];
+                    }
+
+                    if(!isset($_SESSION["SELECTED_BIBLE_BOOK"]))
+                    {
+                        $_SESSION["SELECTED_BIBLE_BOOK"]="Genesis";
+                    }
+                }
+
+                if(isset($_GET["ChapterId"]))
+                {
+                    if($debug==1){echo "ChapterId - ". $_GET["ChapterId"]."<br/>";}
+                    $SELECT_BIBLE_CHAPTER_FOR_SESSION = "SELECT ChapterNumber from BibleChapter WHERE Id=".$_GET["ChapterId"];
+                    if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_CHAPTER_FOR_SESSION>".$SELECT_BIBLE_CHAPTER_FOR_SESSION."<br/>";}
+                    $params = array();
+                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+                    $result_bible_chapter = sqlsrv_query($conn, $SELECT_BIBLE_CHAPTER_FOR_SESSION , $params, $options);
+
+                    while($row_chapter = sqlsrv_fetch_array($result_bible_chapter, SQLSRV_FETCH_ASSOC))
+                    {
+                        $_SESSION["SELECTED_BIBLE_CHAPTER"] = $row_chapter["ChapterNumber"];
+                    }
+
+                    if(!isset($_SESSION["SELECTED_BIBLE_CHAPTER"]))
+                    {
+                        $_SESSION["SELECTED_BIBLE_CHAPTER"]="1";
+                    }
+
+                }
+
+                if(isset($_GET["VerseNr"]))
+                {
+                    if($debug==1){echo "VerseNr - ". $_GET["VerseNr"]."<br/>";}
+                    $SELECT_BIBLE_VERSE_FOR_SESSION = "";
+                    if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_VERSION_FOR_SESSION>".$SELECT_BIBLE_VERSION_FOR_SESSION."<br/>";}
+                    $params = array();
+                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+                    $result_bible_version = sqlsrv_query($conn, $SELECT_BIBLE_VERSION_FOR_SESSION , $params, $options);
+
+                    while($row_version = sqlsrv_fetch_array($result_bible_version, SQLSRV_FETCH_ASSOC)) 
+                    {
+                        $_SESSION["SELECTED_BIBLE_VERSE"] = $row_version["Name"];
+                    }                              
                 }
             }
-            
-            if(isset($_GET["Bookid"]))
-            {
-                if($debug==1){echo "Bookid - ". $_GET["Bookid"]."<br/>";}
-                $SELECT_BIBLE_BOOK_FOR_SESSION = "SELECT Name FROM BibleBook where Id=".$_GET["Bookid"];
-                if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_BOOK_FOR_SESSION>".$SELECT_BIBLE_BOOK_FOR_SESSION."<br/>";}
-                $params = array();
-                $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                $result_bible_book = sqlsrv_query($conn, $SELECT_BIBLE_BOOK_FOR_SESSION , $params, $options);
-
-                while($row_book = sqlsrv_fetch_array($result_bible_book, SQLSRV_FETCH_ASSOC)) 
-                {
-                    $_SESSION["SELECTED_BIBLE_BOOK"] = $row_book["Name"];
-                }
-                
-                if(!isset($_SESSION["SELECTED_BIBLE_BOOK"]))
-                {
-                    $_SESSION["SELECTED_BIBLE_BOOK"]="Genesis";
-                }
-            }
-            
-            if(isset($_GET["ChapterId"]))
-            {
-                if($debug==1){echo "ChapterId - ". $_GET["ChapterId"]."<br/>";}
-                $SELECT_BIBLE_CHAPTER_FOR_SESSION = "SELECT ChapterNumber from BibleChapter WHERE Id=".$_GET["ChapterId"];
-                if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_CHAPTER_FOR_SESSION>".$SELECT_BIBLE_CHAPTER_FOR_SESSION."<br/>";}
-                $params = array();
-                $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                $result_bible_chapter = sqlsrv_query($conn, $SELECT_BIBLE_CHAPTER_FOR_SESSION , $params, $options);
-
-                while($row_chapter = sqlsrv_fetch_array($result_bible_chapter, SQLSRV_FETCH_ASSOC))
-                {
-                    $_SESSION["SELECTED_BIBLE_CHAPTER"] = $row_chapter["ChapterNumber"];
-                }
-                
-                if(!isset($_SESSION["SELECTED_BIBLE_CHAPTER"]))
-                {
-                    $_SESSION["SELECTED_BIBLE_CHAPTER"]="1";
-                }
-
-            }
-
-            if(isset($_GET["VerseNr"]))
-            {
-                if($debug==1){echo "VerseNr - ". $_GET["VerseNr"]."<br/>";}
-                $SELECT_BIBLE_VERSE_FOR_SESSION = "";
-                if($debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_VERSION_FOR_SESSION>".$SELECT_BIBLE_VERSION_FOR_SESSION."<br/>";}
-                $params = array();
-                $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                $result_bible_version = sqlsrv_query($conn, $SELECT_BIBLE_VERSION_FOR_SESSION , $params, $options);
-
-                while($row_version = sqlsrv_fetch_array($result_bible_version, SQLSRV_FETCH_ASSOC)) 
-                {
-                    $_SESSION["SELECTED_BIBLE_VERSE"] = $row_version["Name"];
-                }                              
-            }
-            
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //          $_POST variables
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////           
@@ -140,23 +162,7 @@
                 }
             }
 
-            if(isset($_POST["biblechapter"]) || isset($_POST["biblebook"]) ||isset($_POST["bibleversion"]))
-            {
-                if(isset($_GET["ChapterId"]))
-                {
-                    unset($_GET["ChapterId"]);
-                }
-                
-                if(isset($_GET["Bookid"]))
-                {
-                    unset($_GET["Bookid"]);
-                }
-                
-                if(isset($_GET["VerseNr"]))
-                {
-                    unset($_GET["VerseNr"]);
-                }       
-            }    
+               
             
 //            if(!isset($_SESSION["SELECTED_BIBLE_VERSE"]) && !isset($_POST["bibleverse"]))
 //            {
