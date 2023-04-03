@@ -80,7 +80,7 @@
 @media all and (max-width: 800px) {
     .header_top_logo{
         background-image: none; 
-        background-color: #990000;
+        background-color: #ffffff;
         background-repeat: no-repeat;
         background-position: center center;
         height: 310px;
@@ -90,30 +90,30 @@
 @media all and (max-width: 800px) {
     .header_top_logo{
         background-image: none; 
-        background-color: #990000;
+        background-color: #ffffff;
         background-repeat: no-repeat;
         background-position: center center;
-        height: 310px;
+        height: auto;
     }    
 }
 
 @media all and (max-width: 600px) {
     .header_top_logo{
         background-image: none; 
-        background-color: #990000;
+        background-color: #ffffff;
         background-repeat: no-repeat;
         background-position: center center;
-        height: 310px;
+        height: auto;
     }    
 }
 
 @media all and (max-width: 500px) {
     .header_top_logo{
         background-image: none; 
-        background-color: #990000;
+        background-color: #ffffff;
         background-repeat: no-repeat;
         background-position: center center;
-        height: 310px;
+        height: auto;
     }    
 }
     </style> 
