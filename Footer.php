@@ -1,6 +1,6 @@
         </div>        
         <div class="container-fluid p-5 text-white text-center" style="background-color: #990000;">
-             <h1>Bible For All Open Source Bible Platform</h1>
+             <h1>Bible4All Open Source Bible Platform</h1>
              <div class="row">
                  <div class="col-sm-4">
                      <table>

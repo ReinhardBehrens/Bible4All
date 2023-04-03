@@ -1,11 +1,12 @@
 <?php
+            include './DatabaseLayer.php';
             $serverName = "REIN\\SQLEXPRESS"; //serverName\instanceName
-            $connectionInfo = array( "Database"=>"BibleForAllServerAppv1.Server.Data", "UID"=>"sa", "PWD"=>"password", "CharacterSet" =>"UTF-8");
-            $conn = sqlsrv_connect( $serverName, $connectionInfo);
+            $dbconnection = new DatabaseLayer("BibleForAllServerAppv1.Server.Data", "sa", "password", "UTF-8", $serverName);
+            $conn = $dbconnection->GetConnection();
 
             if( $conn ) {
                  //echo "Connection established.<br />";
             }else{
-                 echo "Connection could not be established.<br />";
+                 echo "Connection could not be established to the database.<br />";
                  die(print_r(sqlsrv_errors(), true));
             }

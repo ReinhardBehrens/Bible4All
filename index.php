@@ -1,5 +1,5 @@
         <?php include './ConnectionString.php';?>
-        <?php include './Header.php';?>
+        <?php include './header.php';?>
         <?php
  
             ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
             
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             // $_GET POST from Search Page
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////      
             /* Get posts from the search page a lookup and set the $_SESSION variables based on search        */
             if(isset($_POST["biblechapter"]) || isset($_POST["biblebook"]) || isset($_POST["bibleversion"]) || isset($_POST["bibleversion"]))
             {
@@ -162,8 +162,6 @@
                 }
             }
 
-               
-            
 //            if(!isset($_SESSION["SELECTED_BIBLE_VERSE"]) && !isset($_POST["bibleverse"]))
 //            {
 //                $_SESSION["SELECTED_BIBLE_VERSE"]= "1";
@@ -178,39 +176,12 @@
 //                }
 //            }
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>        
-            //SELECT NAME FROM BIBLEVERSION
-            $sqlquery_bible_version = "SELECT Name FROM BibleVersion";
-            //print "SQL: $sql\n";
-            $result_bible_version = sqlsrv_query($conn, $sqlquery_bible_version);
-            if($result_bible_version === false) {
-                die(print_r(sqlsrv_errors(), true));
-            }
-            
-            // SELECT NAME FROM BIBLEBOOK
-            $sqlquery_bible_books = "SELECT Name FROM BibleBook";
-            $result_bible_books = sqlsrv_query($conn, $sqlquery_bible_books);
-            if($result_bible_books === false) {
-                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
-            }
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-            
-            
 //------------------------------------------------------------------------------------------------------------------------------------------------
             // SELECT ID FROM BIBLEBOOK
-            $sqlquery_bible_bookid = "SELECT Id FROM BibleBook WHERE dbo.BibleBook.Name='". $_SESSION["SELECTED_BIBLE_BOOK"]."'";
-            if($debug==1){echo "<br/>".$sqlquery_bible_bookid . "<br/>";}
-            $result_bible_bookid = sqlsrv_query($conn, $sqlquery_bible_bookid);
-            if($result_bible_bookid === false) {
-                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
-            }
-            else 
-            {
-                
-            }
-            if($debug===1){echo "Entering while loop<br/>";}
-            // Should only be one
+            $result_bible_bookid = $dbconnection->GetBibleBookIDbyName($_SESSION["SELECTED_BIBLE_BOOK"]);
+            
+            // Should only be one result, 
+            // TODO: This needs cleaning up, code makes no sense.
             $BibleBookID=1;
             while($rowid = sqlsrv_fetch_array($result_bible_bookid, SQLSRV_FETCH_ASSOC))
             {
@@ -221,16 +192,10 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------------------------------------------------------            
-            // GET BibleVerionId based on name
-            $sqlquery_bible_versionid = "SELECT Id FROM BibleVersion WHERE dbo.BibleVersion.Name='".$_SESSION["SELECTED_BIBLE_VERSION"]."'";
-            if($debug==1){echo $sqlquery_bible_versionid . "<br/>";}
-            $result_bible_versionid = sqlsrv_query($conn, $sqlquery_bible_versionid);
-            if($result_bible_versionid === false) {
-                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
-            }
-            
+            $result_bible_versionid=$dbconnection->GetBibleVersionIDByName($_SESSION["SELECTED_BIBLE_VERSION"]);
             $BibleVersionID=1;
-            // Should only be one
+            // Should only be one 
+            // TODO: This needs cleaning up, code makes no sense.
             while($rowid = sqlsrv_fetch_array($result_bible_versionid, SQLSRV_FETCH_ASSOC))
             {
                 $BibleVersionID = $rowid["Id"];
@@ -238,25 +203,8 @@
 
             }
 //------------------------------------------------------------------------------------------------------------------------------------------------
-            $sqlquery_bible_chapters = "SELECT ChapterNumber FROM BibleChapter WHERE BibleVersionId=".$BibleVersionID." AND BibleBookId=".$BibleBookID." ORDER BY ChapterNumber ASC";
-            if($debug==1){echo $sqlquery_bible_chapters . "<br/>";}
-            $result_bible_chapters = sqlsrv_query($conn, $sqlquery_bible_chapters);
-            if($result_bible_chapters === false) {
-                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
-            }   
-
-
-            
-//------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------            
-            // GET BibleVerionId based on name
-            $sqlquery_bible_chapterid = "SELECT Id FROM BibleChapter WHERE dbo.BibleChapter.ChapterNumber=".$_SESSION["SELECTED_BIBLE_CHAPTER"]." AND BibleBookId=".$BibleBookID." AND BibleVersionId=".$BibleVersionID;
-            if($debug==1){echo $sqlquery_bible_chapterid . "<br/>";}
-            $result_bible_chapterid = sqlsrv_query($conn, $sqlquery_bible_chapterid);
-            if($result_bible_chapterid === false) {
-                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
-            }
-
+            $result_bible_chapterid = $dbconnection->GetChapterIdByChapterNameandBiblebookIDandBibleVersionID($_SESSION["SELECTED_BIBLE_CHAPTER"],$BibleBookID, $BibleVersionID);
             $BibleChapterID=1;
             // Should only be one
             while($rowid = sqlsrv_fetch_array($result_bible_chapterid, SQLSRV_FETCH_ASSOC))
@@ -265,25 +213,22 @@
                 if($debug==1){echo "BibleChapterID found ===> " .$BibleChapterID."<br/>";}
             }
 //------------------------------------------------------------------------------------------------------------------------------------------------
-            $sqlquery_bible_verses = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID." ORDER BY VerseNr ASC";
-            if($debug==1){echo $sqlquery_bible_verses . "<br/>";}
-            $result_bible_verses = sqlsrv_query($conn, $sqlquery_bible_verses);
-            if($result_bible_verses === false) {
-                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
-            }
+//            $sqlquery_bible_verses = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID." ORDER BY VerseNr ASC";
+//            if($debug==1){echo $sqlquery_bible_verses . "<br/>";}
+//            $result_bible_verses = sqlsrv_query($conn, $sqlquery_bible_verses);
+//            if($result_bible_verses === false) {
+//                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
+//            }
             
             if(isset($_GET["VerseNr"]))
             {
-                $sqlquery_bible_verses_content = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID." AND VerseNr=".$_GET["VerseNr"];
+                $result_bible_verses_content = $dbconnection->GetVerseNrandVerseContentBYBibleChapterIDandBibleVersionIDandVerseNr($_GET["VerseNr"], $BibleChapterID, $BibleVersionID);
             }
-            else {
-                $sqlquery_bible_verses_content = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID."";
+            else 
+            {
+                $result_bible_verses_content = $dbconnection->GetVerseNrandVerseContentBYBibleChapterIDandBibleVersionID($BibleChapterID, $BibleVersionID);
             }
-            if($debug==1){echo $sqlquery_bible_verses_content . "<br/>";}
-            $result_bible_verses_content = sqlsrv_query($conn, $sqlquery_bible_verses_content);
-            if($result_bible_verses_content === false) {
-                die(print_r(sqlsrv_errors(), true));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      die(print_r(sqlsrv_errors(), true));
-            }
+
         ?>
 
 <div class="container">
@@ -293,7 +238,8 @@
             <form method="POST" action="">
                 <select class="form-select" name="bibleversion" onchange="this.form.submit()">
                 <?php
-                            while($row = sqlsrv_fetch_array($result_bible_version, SQLSRV_FETCH_ASSOC)) {
+                    $result_bible_versions = $dbconnection->GetBibleVersionsByName();
+                    while($row = sqlsrv_fetch_array($result_bible_versions, SQLSRV_FETCH_ASSOC)) {
                 ?>
                             <option value="<?php echo $row["Name"]; ?>" <?php if(isset($_SESSION["SELECTED_BIBLE_VERSION"]) && $_SESSION["SELECTED_BIBLE_VERSION"]==$row["Name"]){ echo "selected"; } ?>><?php echo $row["Name"]; ?></option>
                 <?php
@@ -306,6 +252,7 @@
             <form method="POST" action="">
                 <select class="form-select" name="biblebook" onchange="this.form.submit()">
                 <?php
+                            $result_bible_books = $dbconnection->GetBibleBooksByName();
                             while($row = sqlsrv_fetch_array($result_bible_books, SQLSRV_FETCH_ASSOC)) {
                 ?>
                             <option value="<?php echo $row["Name"]; ?>" <?php if(isset($_SESSION["SELECTED_BIBLE_BOOK"]) && $_SESSION["SELECTED_BIBLE_BOOK"]==$row["Name"]){ echo "selected"; } ?>><?php echo $row["Name"]; ?></option>
@@ -319,6 +266,7 @@
             <form method="POST" action="">
                 <select class="form-select" name="biblechapter" onchange="this.form.submit()">
                 <?php
+                    $result_bible_chapters = $dbconnection->GetChapterNumberByBibleVersionIDandBibleBookId($BibleVersionID, $BibleBookID);
                     while($row = sqlsrv_fetch_array($result_bible_chapters, SQLSRV_FETCH_ASSOC)) {
                 ?>
 
@@ -360,5 +308,5 @@
     </div>
 </div>
  <?php          
-        include './Footer.php';
+        include './footer.php';
 

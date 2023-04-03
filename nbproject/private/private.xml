@@ -5,7 +5,8 @@
         <group>
             <file>file:/C:/inetpub/wwwroot/Bible4All/Search.php</file>
             <file>file:/C:/inetpub/wwwroot/Bible4All/index.php</file>
-            <file>file:/C:/inetpub/wwwroot/Bible4All/Header.php</file>
+            <file>file:/C:/inetpub/wwwroot/Bible4All/DatabaseLayer.php</file>
+            <file>file:/C:/inetpub/wwwroot/Bible4All/ConnectionString.php</file>
         </group>
     </open-files>
 </project-private>

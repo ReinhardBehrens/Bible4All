@@ -79,7 +79,7 @@
 
 @media all and (max-width: 800px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All.jpg); 
+        background-image: none; 
         background-color: #990000;
         background-repeat: no-repeat;
         background-position: center center;
@@ -89,7 +89,7 @@
 
 @media all and (max-width: 800px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All.jpg); 
+        background-image: none; 
         background-color: #990000;
         background-repeat: no-repeat;
         background-position: center center;
@@ -97,6 +97,25 @@
     }    
 }
 
+@media all and (max-width: 600px) {
+    .header_top_logo{
+        background-image: none; 
+        background-color: #990000;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 310px;
+    }    
+}
+
+@media all and (max-width: 500px) {
+    .header_top_logo{
+        background-image: none; 
+        background-color: #990000;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 310px;
+    }    
+}
     </style> 
    </head>
    <body>  
@@ -104,13 +123,13 @@
            <div  class="row">
                <div class="col-sm-6">
                     <nav>
-                        <a href="./">Home</a> |
-                        <a href="./ParallelView/">Comparative Bible Study</a> |
-                        <a href="./pdfs.php">Bible in PDF</a> |
-                        <a href="./statementoffaith.php">Statement of Faith</a> |
-                        <a href="./about.php">About</a> |
-                        <a href="./test_search_function.php">test_search_function</a> |                         
-                        <a href="./simpleregexmatch.php">simpleregexmatch</a>
+                        <a href="./"><b>Home</b></a> |
+                        <a href="./comparativestudy.php"><b>Comparative Bible Study</b></a> |
+                        <a href="./pdfs.php"><b>Bible in PDF</b></a> |
+                        <a href="./statementoffaith.php"><b>Statement of Faith</b></a> |
+                        <a href="./about.php"><b>About</b></a> 
+<!--                        <a href="./test_search_function.php"><b>test_search_function</b></a> |                         
+                        <a href="./simpleregexmatch.php"><b>simpleregexmatch</b></a>-->
                     </nav>
                </div>
            </div>
