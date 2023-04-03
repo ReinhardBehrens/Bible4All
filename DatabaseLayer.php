@@ -135,4 +135,43 @@ class DatabaseLayer{
         return $result_bible_verses_content;
     }
     
+    ////////////////////////////////////////////////////////////////////////////
+    // $_GET session data queries
+    ////////////////////////////////////////////////////////////////////////////
+    function GetBibleNameBYID($VersionID)
+    {
+        if($this->debug==1){echo "Version ID - ".$VersionID."<br/>";}
+        $SELECT_BIBLE_VERSION_FOR_SESSION = "SELECT Name from BibleVersion Where Id=".$VersionID;
+        // Get biblebook            
+        if($this->debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_VERSION_FOR_SESSION>".$SELECT_BIBLE_VERSION_FOR_SESSION."<br/>";}
+        $params = array();
+        $options = array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+        $result_bible_version = sqlsrv_query($this->connection, $SELECT_BIBLE_VERSION_FOR_SESSION , $params, $options);
+        
+        return $result_bible_version;
+    }
+    
+    function GetChapterNumberBYID($ChapterID)
+    {
+        if($this->debug==1){echo "ChapterId - ". $ChapterID."<br/>";}
+        $SELECT_BIBLE_CHAPTER_FOR_SESSION = "SELECT ChapterNumber from BibleChapter WHERE Id=".$ChapterID;
+        if($this->debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_CHAPTER_FOR_SESSION>".$SELECT_BIBLE_CHAPTER_FOR_SESSION."<br/>";}
+        $params = array();
+        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+        $result_bible_chapter = sqlsrv_query($this->connection, $SELECT_BIBLE_CHAPTER_FOR_SESSION , $params, $options);
+        
+        return $result_bible_chapter;
+    }
+
+    function GetBibleBookNameBYID($Bookid)
+    {
+        if($this->debug==1){echo "Bookid - ".$Bookid."<br/>";}
+        $SELECT_BIBLE_BOOK_FOR_SESSION = "SELECT Name FROM BibleBook where Id=".$Bookid;
+        if($this->debug==1){echo "-----SQL QUERY \$SELECT_BIBLE_BOOK_FOR_SESSION>".$SELECT_BIBLE_BOOK_FOR_SESSION."<br/>";}
+        $params = array();
+        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+        $result_bible_book = sqlsrv_query($this->connection, $SELECT_BIBLE_BOOK_FOR_SESSION , $params, $options);
+        
+        return $result_bible_book;
+    }
 }
