@@ -24,6 +24,10 @@
         <div class="col-sm-4"></div>
     </div>
 </div>
-
+<div class="row">
+    <div class="col-md-12">
+        <br />
+    </div>
+</div>
  <?php          
         include './Footer.php';

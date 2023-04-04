@@ -9,7 +9,7 @@ class DatabaseLayer{
     public $CharacterSet;
     public $connection;
     public $serverName;
-    public $debug;
+    public $debug=0;
 
     function __construct($Database,$UID,$PWD,$CharacterSet,$ServerName)
     {      

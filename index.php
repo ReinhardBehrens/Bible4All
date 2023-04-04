@@ -9,7 +9,7 @@
             //
             //
             // HANDLE POST REQUESTS && SESSION DATA
-            
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             // $_GET POST from Search Page
             ////////////////////////////////////////////////////////////////////////////////////////////////////      
@@ -38,11 +38,13 @@
             {
                 if(isset($_GET["VersionId"]))
                 {
+                    if($debug==1){echo "\$_GET[\"VersionId\"] => ".$_GET["VersionId"]."<br/>";}
                     $result_bible_version = $dbconnection->GetBibleNameBYID($_GET["VersionId"]);
 
                     while($row_version = sqlsrv_fetch_array($result_bible_version, SQLSRV_FETCH_ASSOC)) 
                     {
                         $_SESSION["SELECTED_BIBLE_VERSION"] = $row_version["Name"];
+                        if($debug==1){echo "\$_GET  SESSION[\"SELECTED_BIBLE_VERSION\"]=> ".$_SESSION["SELECTED_BIBLE_VERSION"]."<br/>";}
                     }
 
                     if(!isset($_SESSION["SELECTED_BIBLE_VERSION"]))
@@ -53,11 +55,13 @@
 
                 if(isset($_GET["Bookid"]))
                 {
-                    $result_bible_book = $dbconnection->GetBibleNameBYID($_GET["Bookid"]);
+                    if($debug==1){echo "\$_GET[\"Bookid\"] => ".$_GET["Bookid"]."<br/>";}
+                    $result_bible_book = $dbconnection->GetBibleBookNameBYID($_GET["Bookid"]);
 
                     while($row_book = sqlsrv_fetch_array($result_bible_book, SQLSRV_FETCH_ASSOC)) 
                     {
                         $_SESSION["SELECTED_BIBLE_BOOK"] = $row_book["Name"];
+                        if($debug==1){echo "\$_GET  SESSION[\"SELECTED_BIBLE_BOOK\"]=> ".$_SESSION["SELECTED_BIBLE_BOOK"]."<br/>";}
                     }
 
                     if(!isset($_SESSION["SELECTED_BIBLE_BOOK"]))
@@ -68,11 +72,13 @@
 
                 if(isset($_GET["ChapterId"]))
                 {
+                    if($debug==1){echo "\$_GET[\"ChapterId\"] => ".$_GET["ChapterId"]."<br/>";}
                     $result_bible_chapter = $dbconnection->GetChapterNumberBYID($_GET["ChapterId"]);
 
                     while($row_chapter = sqlsrv_fetch_array($result_bible_chapter, SQLSRV_FETCH_ASSOC))
                     {
                         $_SESSION["SELECTED_BIBLE_CHAPTER"] = $row_chapter["ChapterNumber"];
+                        if($debug==1){echo "\$_GET  SESSION[\"SELECTED_BIBLE_CHAPTER\"]=> ".$_SESSION["SELECTED_BIBLE_CHAPTER"]."<br/>";}
                     }
 
                     if(!isset($_SESSION["SELECTED_BIBLE_CHAPTER"]))
@@ -184,6 +190,7 @@
             if(isset($_GET["VerseNr"]))
             {
                 $result_bible_verses_content = $dbconnection->GetVerseNrandVerseContentBYBibleChapterIDandBibleVersionIDandVerseNr($_GET["VerseNr"], $BibleChapterID, $BibleVersionID);
+                
             }
             else 
             {

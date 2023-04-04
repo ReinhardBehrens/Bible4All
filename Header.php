@@ -47,9 +47,22 @@
     background-color: #990000;
 }
 
-@media all and (max-width: 1920px) {
+.footer-ahref{
+    color: white;
+}
+
+.search-bar-custom{
+    background-image: url('./images/grey-mg.png');
+    background-color: white;
+    background-image: url('searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding-left: 40px;
+}
+
+@media only screen and (max-width: 1920px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All.jpg); 
+        background-image: url(./images/Bible4All_1920.jpg); 
         background-size: 1920px 306px;
         background-repeat: no-repeat;
         background-position: center center;
@@ -57,37 +70,47 @@
     }
 }
 
-@media all and (max-width: 1600px) {
+@media only screen and (min-width: 1367px) and (max-width: 1600px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All.jpg); 
+        background-image: url(./images/Bible4All_1600.jpg); 
         background-color: #990000;
         background-repeat: no-repeat;
         background-position: center center;
-        height: 310px;
+        height: 300px;
     }    
 }
 
-@media all and (max-width: 1200px) {
+@media only screen and (min-width: 1201px) and (max-width: 1366px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All.jpg); 
+        background-image: url(./images/Bible4All_1366.jpg); 
         background-color: #990000;
         background-repeat: no-repeat;
         background-position: center center;
-        height: 310px;
+        height: 300px;
     }    
 }
 
-@media all and (max-width: 800px) {
+@media only screen and (min-width: 801px) and (max-width: 1200px) {
+    .header_top_logo{
+        background-image: url(./images/Bible4All_1200.jpg); 
+        background-color: #990000;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 300px;
+    }    
+}
+
+@media only screen and (max-width: 800px) {
     .header_top_logo{
         background-image: none; 
         background-color: #ffffff;
         background-repeat: no-repeat;
         background-position: center center;
-        height: 310px;
+        height: 300px;
     }    
 }
 
-@media all and (max-width: 800px) {
+@media only screen and (max-width: 800px) {
     .header_top_logo{
         background-image: none; 
         background-color: #ffffff;
@@ -97,7 +120,7 @@
     }    
 }
 
-@media all and (max-width: 600px) {
+@media only screen and (max-width: 600px) {
     .header_top_logo{
         background-image: none; 
         background-color: #ffffff;
@@ -107,7 +130,7 @@
     }    
 }
 
-@media all and (max-width: 500px) {
+@media only screen and (max-width: 500px) {
     .header_top_logo{
         background-image: none; 
         background-color: #ffffff;
@@ -121,14 +144,15 @@
    <body>  
        <div class="container-fluid">
            <div  class="row">
-               <div class="col-sm-6">
+               <div class="col-sm-12">
                     <nav>
                         <a href="./"><b>Home</b></a> |
                         <a href="./comparativestudy.php"><b>Comparative Bible Study</b></a> |
                         <a href="./pdfs.php"><b>Bible in PDF</b></a> |
                         <a href="./statementoffaith.php"><b>Statement of Faith</b></a> |
-                        <a href="./about.php"><b>About</b></a> 
-<!--                        <a href="./test_search_function.php"><b>test_search_function</b></a> |                         
+                        <a href="./about.php"><b>About</b></a> |
+                        <a href="./contactus.php"><b>Contact Us</b></a>
+<!--                    <a href="./test_search_function.php"><b>test_search_function</b></a> |                         
                         <a href="./simpleregexmatch.php"><b>simpleregexmatch</b></a>-->
                     </nav>
                </div>
@@ -137,11 +161,19 @@
                <div class="col-sm-12" center-block>
                     <div class="header_top_logo">
                         <form class="form-inline" action="Search.php" method="POST">
-                          <div class="form-group mb-12">
-                              <br/>
-                              <input class="form-control" placeholder="bibleverse or keyword ; biblebook(optional) (E.g. In the beginning; John)" name="searchfield" type="text" style="width:100%;"/>
-                          </div>
-                          <button class="btn btn-primary-search" onclick="this.form.submit()">Search</button>
+                          
+                          
+                            <table style="width:100%;">
+                            <tr>
+                                <td><br/></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                  <input class="form-control search-bar-custom" placeholder="Bibleverse or keyword ; biblebook(optional) (E.g. In the beginning; John)" name="searchfield" type="text" style="width:100%;"/>
+                                </td>
+                                <td><button class="btn btn-primary-search" onclick="this.form.submit()">Search</button></td>
+                            </tr>
+                          </table>
                         </form>
                     </div>
                </div>
