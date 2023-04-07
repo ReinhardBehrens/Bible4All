@@ -9,8 +9,9 @@
              <div class="row" >
                  <div class="col-sm-4">
                      <table>
-                        <tr><td><a class="footer-ahref" href="http://www.biblehub.com">BibleHub.com</a></td></tr>
-                        <tr><td><a class="footer-ahref" href="http://www.biblegateway.com">BibleGateway.com</a></td></tr>
+                        <tr><td><a class="footer-ahref" href="http://www.biblehub.com">Bible Hub</a></td></tr>
+                        <tr><td><a class="footer-ahref" href="http://www.biblegateway.com">Bible Gateway</a></td></tr>
+                        <tr><td><a class="footer-ahref" href="https://christianchat.com/">Christian Chat</a></td></tr>
                      </table>
                  </div>
                  <div class="col-sm-4">
@@ -36,5 +37,8 @@
              </div>
         </div>
     </div>
+    <script>
+        window.onload = function(){ document.getElementById("loading").style.display = "none" }
+    </script>
     </body>
 </html>

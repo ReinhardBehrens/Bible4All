@@ -72,7 +72,8 @@
 
 @media only screen and (min-width: 1367px) and (max-width: 1600px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All_1600.jpg); 
+        background-image: url(./images/Bible4All_1600.jpg);
+        background-size: 1600px 300px;
         background-color: #990000;
         background-repeat: no-repeat;
         background-position: center center;
@@ -82,7 +83,8 @@
 
 @media only screen and (min-width: 1201px) and (max-width: 1366px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All_1366.jpg); 
+        background-image: url(./images/Bible4All_1366.jpg);
+        background-size: 1366px 300px;
         background-color: #990000;
         background-repeat: no-repeat;
         background-position: center center;
@@ -92,7 +94,8 @@
 
 @media only screen and (min-width: 801px) and (max-width: 1200px) {
     .header_top_logo{
-        background-image: url(./images/Bible4All_1200.jpg); 
+        background-image: url(./images/Bible4All_1200.jpg);
+        background-size: 1200px 300px;
         background-color: #990000;
         background-repeat: no-repeat;
         background-position: center center;
@@ -139,9 +142,16 @@
         height: auto;
     }    
 }
+
+#loading {width: 100%;height: 100%;top: 0px;left: 0px;position: fixed;display: block; z-index: 99}
+
+#loading-image {position: absolute;top: 40%;left: 45%;z-index: 100} 
     </style> 
    </head>
-   <body>  
+   <body>
+       <div id="loading">
+        <img id="loading-image" src="images/loading.gif" alt="Loading..." />
+       </div>
        <div class="container-fluid">
            <div  class="row">
                <div class="col-sm-12">

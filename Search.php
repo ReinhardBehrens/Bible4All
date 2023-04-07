@@ -4,6 +4,7 @@
 //Ref : https://stackoverflow.com/questions/12369709/php-string-words-to-array
                 if(isset($_POST["searchfield"]))
                 {
+                    echo "<h1>Search Results:<br/></h1>";
                     // Get book names, if books are in the bible then do search of Bible Verses in Bible Create link to Bible Reading full chapter
                     if($debug==1){echo '$_POST["searchfield"] ISSET<br/>';}
                     if($debug==1){echo 'Starting search, by extracting all Bible books from the keywords<br/>';}
@@ -37,185 +38,56 @@
                         $biblechaptersbyid = array();
                         if($bible_book != null && $bible_book != "")
                         {
-                            // Get biblebook
-                            $SELECT_GET_BIBLE_BOOKID = "SELECT Id FROM BibleBook WHERE Name='".$bible_book."'";
-                            if($debug==1){echo "-----SQL QUERY \$SELECT_GET_BIBLE_BOOKID>".$SELECT_GET_BIBLE_BOOKID."<br/>";}
-                            $params = array();
-                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                            $result_bible_biblebookid_details = sqlsrv_query($conn, $SELECT_GET_BIBLE_BOOKID , $params, $options);
+                            $result_bible_biblebookid_details = $dbconnection->GetBibleBookIDbyName($bible_book);
 
                             while($row_bookdetailsid = sqlsrv_fetch_array($result_bible_biblebookid_details, SQLSRV_FETCH_ASSOC)) 
                             {
                                 $biblebookid = $row_bookdetailsid["Id"];
                             }
 
-                            $SELECT_GET_BIBLE_CHAPTERSLIST_FOR_BOOKID = "SELECT Id FROM BibleChapter WHERE BibleBookId='".$biblebookid."'";
-                            if($debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_CHAPTERSLIST_FOR_BOOKID."<br/>";}
-                            $params = array();
-                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                            $result_bible_chapters_byid = sqlsrv_query($conn, $SELECT_GET_BIBLE_CHAPTERSLIST_FOR_BOOKID , $params, $options);                            
+                            $result_bible_chapters_byid = $dbconnection->GetChapterIDbyBibleBookId($biblebookid);
+                            
                             while($row_chapters_list = sqlsrv_fetch_array($result_bible_chapters_byid, SQLSRV_FETCH_ASSOC)) 
                             {
                                 $biblechaptersbyid[] = $row_chapters_list["Id"];
                             }                      
                         }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
-// Three queries to get total row count
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
-$page_maxumum_results = 35;
-$row_total_number_rows = 0;
-
-////////******************************************************************************************************************************//////
-    $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST = "SELECT * FROM BibleVerses WHERE CONTAINS(VerseContent, '\"". implode(" " ,$searchkeywords)."\"')";
-    if($debug==1){ echo "\$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST : ".$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST; }
-    $params = array();
-    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
-    $result_bible_verses_ft = sqlsrv_query( $conn, $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST , $params, $options );
-    $row_count_full_text_search_query = sqlsrv_num_rows($result_bible_verses_ft);
-    $row_total_number_rows = $row_total_number_rows + $row_count_full_text_search_query;
-    if($debug==1){ echo "\$row_total_number_rows [0]: $row_total_number_rows";}
-////////******************************************************************************************************************************//////
-    if($biblebookid > 0 )
-    {
-        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE BibleChapterId IN(". implode(",", $biblechaptersbyid).") AND ";
-        if($debug==1){echo "<br/>Basic with BibleChapterId $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
-    }
-    else
-    {
-        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE ";
-        if($debug==1){echo "<br/>Basic $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
-    }
-
-    $SELECT_SEARCH_QUERY_OR_OPERATION="";
-    $current_count=0;
-
-    foreach($searchkeywords as $value)
-    {
-        $select_bible_book_name = "";
-        if($debug==1){echo "<br/>-----Building query with following keyword: ". $value."-----<br/>";}
-        if($current_count == 0)
-        {
-            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-            if($debug==1){echo "<br/>=================------\$current_count==0 so building first part of the select query without the AND-----";}
-            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." VerseContent LIKE '%".$value."%'";
-            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-        }
-        else
-        {
-            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-            if($debug==1){echo "<br/>=================-----\$current_count>0 so building rest of the select query with AND-----<br/>";}                            
-            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." AND VerseContent LIKE '%".$value."%'" ;
-            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-        }
-
-        $current_count++;
-    }
-    $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." ";
-    if($debug==1){echo "\$SELECT_SEARCH_QUERY_OR_OPERATION : <br/>".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>"; } 
-
-    $params = array();
-    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
-    $result_bible_verses = sqlsrv_query( $conn, $SELECT_SEARCH_QUERY_AND_OPERATION , $params, $options );
-    $row_count_search_query_AND_search= sqlsrv_num_rows($result_bible_verses);
-    $row_total_number_rows = $row_total_number_rows + $row_count_search_query_AND_search;
-    if($debug==1){ echo "\$row_total_number_rows [1]: $row_total_number_rows";}
-////////******************************************************************************************************************************//////
-    if($biblebookid > 0 )
-    {
-        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE BibleChapterId IN(". implode(",", $biblechaptersbyid).") AND ";
-        if($debug==1){echo "<br/>Basic with BibleChapterId $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
-    }
-    else
-    {
-        $SELECT_SEARCH_QUERY_AND_OPERATION="SELECT * FROM BibleVerses WHERE ";
-        if($debug==1){echo "<br/>Basic $SELECT_SEARCH_QUERY_AND_OPERATION++++++++++++++++++++++++++++++>>>>>>>>>>>>> ".$SELECT_SEARCH_QUERY_AND_OPERATION;}
-    }
-
-    $current_count=0;
-
-    foreach($searchkeywords as $value)
-    {
-        $select_bible_book_name = "";
-        if($debug==1){echo "<br/>-----Building query with following keyword: ". $value."-----<br/>";}
-        if($current_count == 0)
-        {
-            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-            if($debug==1){echo "<br/>=================------\$current_count==0 so building first part of the select query without the AND-----";}
-            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." VerseContent LIKE '%".$value."%'";
-            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-        }
-        else
-        {
-            if($debug==1){echo "<br/>================={BEFORE CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-            if($debug==1){echo "<br/>=================-----\$current_count>0 so building rest of the select query with AND-----<br/>";}                            
-            $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." OR VerseContent LIKE '%".$value."%'" ;
-            if($debug==1){echo "<br/>================={AFTER CONCATENATION}".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>";}
-        }
-
-        $current_count++;
-    }
-    $SELECT_SEARCH_QUERY_AND_OPERATION = $SELECT_SEARCH_QUERY_AND_OPERATION." ";
-    if($debug==1){echo "\$SELECT_SEARCH_QUERY_OR_OPERATION : <br/>".$SELECT_SEARCH_QUERY_AND_OPERATION."<br/>"; } 
-
-    $params = array();
-    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
-    $result_bible_verses = sqlsrv_query( $conn, $SELECT_SEARCH_QUERY_AND_OPERATION , $params, $options );  
-    $row_count_search_query_OR_search= sqlsrv_num_rows($result_bible_verses);
-    $row_total_number_rows = $row_total_number_rows + $row_count_search_query_OR_search;
-    if($debug==1){ echo "\$row_total_number_rows [2]: $row_total_number_rows";}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Full Text Search using Contains   
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
                     $amount_of_keywords = sizeof($searchkeywords);
 
-                    // DO FULL TEXT SEARCH TO NARROW EXPLICID SEARCHES
-                    // Get all the constrained narrowed down bible verses
-                    $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST = "SELECT * FROM BibleVerses WHERE CONTAINS(VerseContent, '\"". implode(" " ,$searchkeywords)."\"')";
-                    if($debug==1){ echo "\$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST : ".$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST; }
-                    $params = array();
-                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
-                    $result_bible_verses_ft = sqlsrv_query( $conn, $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST , $params, $options );
+
+                    $result_bible_verses_ft = $dbconnection-> GetAllFromBibleVersesWHERECONTAINS(implode(" " ,$searchkeywords));
                     
                     while($row = sqlsrv_fetch_array($result_bible_verses_ft, SQLSRV_FETCH_ASSOC))
                     {
                         try 
                         {
-                            $SELECT_BIBLE_VERSION = "SELECT * FROM BibleVersion WHERE Id=".$row["BibleVersionId"]."";
-                            if($debug==1){echo "-----SQL QUERY>".$SELECT_BIBLE_VERSION."<br/>";}
-                            $params = array();
-                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                            $result_bible_version_byid = sqlsrv_query($conn, $SELECT_BIBLE_VERSION , $params, $options);
+                            $result_bible_version_byid = $dbconnection->GetAllFromBibleVersionBYID($row["BibleVersionId"]);
                             $bible_version_for_verse = "";
                             while($row_versionid = sqlsrv_fetch_array($result_bible_version_byid, SQLSRV_FETCH_ASSOC))  {
                                 $bible_version_for_verse = $row_versionid["Version"];
                             }
                             
-                            $SELECT_GET_BIBLE_CHAPTER_AND_ID = "SELECT * FROM BibleChapter WHERE Id=".$row["BibleChapterId"];
-                            if($debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_CHAPTER_AND_ID."<br/>";}
-                            $params = array();
-                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                            $result_bible_chapter_getid = sqlsrv_query($conn, $SELECT_GET_BIBLE_CHAPTER_AND_ID , $params, $options);
+                            $result_bible_chapter_getid = $dbconnection->GetALlFromBibleChapterBYID($row["BibleChapterId"]);
                             $row_count_bible_chapter = sqlsrv_num_rows($result_bible_chapter_getid);
 
                             if($row_count_bible_chapter=1)
                             {
                                 while($row_chapterid = sqlsrv_fetch_array($result_bible_chapter_getid, SQLSRV_FETCH_ASSOC))  {
-                                    $SELECT_GET_BIBLE_BOOK = "SELECT * FROM BibleBook WHERE Id=".$row_chapterid["BibleBookId"];
-                                    if($debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_BOOK."<br/>";}
-                                    $params = array();
-                                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                                    $result_bible_biblebook_details = sqlsrv_query($conn, $SELECT_GET_BIBLE_BOOK , $params, $options);
+                                    $result_bible_biblebook_details = $dbconnection->GetAllFromBibleBookById($row_chapterid["BibleBookId"]);
                                     $row_count_bookinfo = sqlsrv_num_rows($result_bible_biblebook_details);
                                     while($row_bookdetails = sqlsrv_fetch_array($result_bible_biblebook_details, SQLSRV_FETCH_ASSOC)) 
                                     {                                        
                                       if(strlen($row["VerseContent"])<=10)
                                       {
-                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." - ".$row["VerseNr"]." ". substr($row["VerseContent"],0,10) ."... (".$bible_version_for_verse.")</a>"; 
+                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." : ".$row["VerseNr"]." ". substr($row["VerseContent"],0,10) ."... (".$bible_version_for_verse.")</a>"; 
                                       }
                                       else 
                                       {
-                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." - ".$row["VerseNr"]." ". substr($row["VerseContent"],0,25) ."... (".$bible_version_for_verse.")</a>";   
+                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." : ".$row["VerseNr"]." ". substr($row["VerseContent"],0,25) ."... (".$bible_version_for_verse.")</a>";   
                                       }
                                     }
                                 }
@@ -279,25 +151,10 @@ $row_total_number_rows = 0;
                         }   
 
                         // Build HTML string
-                        echo "<p><a href=\"\" ><sup>".$row["VerseNr"]."</sup></a>". implode("", $outputverse)."</div>";
+                        echo "<p><sup>".$row["VerseNr"]."</sup>". implode("", $outputverse)."</div>";
                         unset($outputverse);
                     }
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                  
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+  
                     
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Search containing AND condition   
@@ -364,41 +221,30 @@ $row_total_number_rows = 0;
                     {
                         try 
                         {
-                            $SELECT_BIBLE_VERSION = "SELECT * FROM BibleVersion WHERE Id=".$row["BibleVersionId"]."";
-                            if($debug==1){echo "-----SQL QUERY>".$SELECT_BIBLE_VERSION."<br/>";}
-                            $params = array();
-                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                            $result_bible_version_byid = sqlsrv_query($conn, $SELECT_BIBLE_VERSION , $params, $options);
+                            $result_bible_version_byid = $dbconnection->GetAllFromBibleVersionBYID($row["BibleVersionId"]);
+                            
                             $bible_version_for_verse = "";
                             while($row_versionid = sqlsrv_fetch_array($result_bible_version_byid, SQLSRV_FETCH_ASSOC))  {
                                 $bible_version_for_verse = $row_versionid["Version"];
                             }
-                            
-                            $SELECT_GET_BIBLE_CHAPTER_AND_ID = "SELECT * FROM BibleChapter WHERE Id=".$row["BibleChapterId"];
-                            if($debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_CHAPTER_AND_ID."<br/>";}
-                            $params = array();
-                            $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                            $result_bible_chapter_getid = sqlsrv_query($conn, $SELECT_GET_BIBLE_CHAPTER_AND_ID , $params, $options);
+
+                            $result_bible_chapter_getid = $dbconnection->GetALlFromBibleChapterBYID($row["BibleChapterId"]);
                             $row_count_bible_chapter = sqlsrv_num_rows($result_bible_chapter_getid);
 
                             if($row_count_bible_chapter=1)
                             {
                                 while($row_chapterid = sqlsrv_fetch_array($result_bible_chapter_getid, SQLSRV_FETCH_ASSOC))  {
-                                    $SELECT_GET_BIBLE_BOOK = "SELECT * FROM BibleBook WHERE Id=".$row_chapterid["BibleBookId"];
-                                    if($debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_BOOK."<br/>";}
-                                    $params = array();
-                                    $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
-                                    $result_bible_biblebook_details = sqlsrv_query($conn, $SELECT_GET_BIBLE_BOOK , $params, $options);
+                                    $result_bible_biblebook_details = $dbconnection->GetAllFromBibleBookById($row_chapterid["BibleBookId"]);
                                     $row_count_bookinfo = sqlsrv_num_rows($result_bible_biblebook_details);
                                     while($row_bookdetails = sqlsrv_fetch_array($result_bible_biblebook_details, SQLSRV_FETCH_ASSOC)) 
                                     {                                        
                                       if(strlen($row["VerseContent"])<=10)
                                       {
-                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." - ".$row["VerseNr"]." ". substr($row["VerseContent"],0,10) ."... (".$bible_version_for_verse.")</a>"; 
+                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." : ".$row["VerseNr"]." ". substr($row["VerseContent"],0,10) ."... (".$bible_version_for_verse.")</a>"; 
                                       }
                                       else 
                                       {
-                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." - ".$row["VerseNr"]." ". substr($row["VerseContent"],0,25) ."... (".$bible_version_for_verse.")</a>";   
+                                         echo "<div><a href=\"./index.php?VersionId=".$row["BibleVersionId"]."&ChapterId=".$row["BibleChapterId"]."&Bookid=".$row_chapterid["BibleBookId"]."&VerseNr=".$row["VerseNr"]."\" >".$row_bookdetails["Name"]." ".$row_chapterid["ChapterNumber"]." : ".$row["VerseNr"]." ". substr($row["VerseContent"],0,25) ."... (".$bible_version_for_verse.")</a>";   
                                       }
                                     }
                                 }
@@ -461,7 +307,7 @@ $row_total_number_rows = 0;
                         }  
 
                         // Build HTML string
-                        echo "<p><a href=\"\" ><sup>".$row["VerseNr"]."</sup></a>". implode("", $outputverse)."</div>";
+                        echo "<p><sup>".$row["VerseNr"]."</sup>". implode("", $outputverse)."</div>";
                         unset($outputverse);
                     }                  
                 }

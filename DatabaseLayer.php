@@ -98,6 +98,16 @@ class DatabaseLayer{
         return $result_bible_chapters;
     }
     
+    function GetChapterIDbyBibleBookId($Biblebookid)
+    {
+        $SELECT_GET_BIBLE_CHAPTERSLIST_FOR_BOOKID = "SELECT Id FROM BibleChapter WHERE BibleBookId='".$Biblebookid."'";
+        if($this->debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_CHAPTERSLIST_FOR_BOOKID."<br/>";}
+        $params = array();
+        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+        $result_bible_chapters_byid = sqlsrv_query($this->connection, $SELECT_GET_BIBLE_CHAPTERSLIST_FOR_BOOKID , $params, $options);
+        return $result_bible_chapters_byid;
+    }
+    
     function GetChapterIdByChapterNameandBiblebookIDandBibleVersionID($SelectedBibleChapter, $BibleBookID, $BibleVersionID)
     {
         // GET BibleVerionId based on name
@@ -109,11 +119,11 @@ class DatabaseLayer{
         }
         return $result_bible_chapterid;
     }
-    
+
     function GetVerseNrandVerseContentBYBibleChapterIDandBibleVersionIDandVerseNr($VerseNr, $BibleChapterID, $BibleVersionID)
     {
 
-        $sqlquery_bible_verses_content = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID." AND VerseNr=".$VerseNr;
+        $sqlquery_bible_verses_content = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID." AND VerseNr=".$VerseNr." ORDER BY VerseNr";
         if($this->debug==1){ echo $sqlquery_bible_verses_content. "<br/>"; }
         $result_bible_verses_content = sqlsrv_query($this->connection, $sqlquery_bible_verses_content);
         if($result_bible_verses_content === false) {
@@ -125,7 +135,7 @@ class DatabaseLayer{
 
     function GetVerseNrandVerseContentBYBibleChapterIDandBibleVersionID($BibleChapterID, $BibleVersionID)
     {
-        $sqlquery_bible_verses_content = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID."";
+        $sqlquery_bible_verses_content = "SELECT VerseNr,VerseContent FROM BibleVerses WHERE BibleChapterId=".$BibleChapterID." AND BibleVersionId=".$BibleVersionID." ORDER BY VerseNr";
         if($this->debug==1){ echo $sqlquery_bible_verses_content. "<br/>"; }
         $result_bible_verses_content = sqlsrv_query($this->connection, $sqlquery_bible_verses_content);
         if($result_bible_verses_content === false) {
@@ -173,5 +183,51 @@ class DatabaseLayer{
         $result_bible_book = sqlsrv_query($this->connection, $SELECT_BIBLE_BOOK_FOR_SESSION , $params, $options);
         
         return $result_bible_book;
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Search page queries
+    ////////////////////////////////////////////////////////////////////////////
+    function GetAllFromBibleVersesWHERECONTAINS($Searchkeywords)
+    {
+        // DO FULL TEXT SEARCH TO NARROW EXPLICID SEARCHES
+        // Get all the constrained narrowed down bible verses
+        $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST = "SELECT * FROM BibleVerses WHERE CONTAINS(VerseContent, '\"". $Searchkeywords."\"')";
+        if($this->debug==1){ echo "\$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST : ".$FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST; }
+        $params = array();
+        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
+        $result_bible_verses_ft = sqlsrv_query( $this->connection, $FULLTEXT_SEARCH_WITH_CONSTRAINED_SEARCH_FIRST , $params, $options );
+        
+        return $result_bible_verses_ft;
+    }
+    function GetAllFromBibleVersionBYID($BibleVersionId)
+    {
+        $SELECT_BIBLE_VERSION = "SELECT * FROM BibleVersion WHERE Id=".$BibleVersionId."";
+        if($this->debug==1){echo "-----SQL QUERY>".$SELECT_BIBLE_VERSION."<br/>";}
+        $params = array();
+        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+        $result_bible_version_byid = sqlsrv_query($this->connection, $SELECT_BIBLE_VERSION , $params, $options);
+        return $result_bible_version_byid;
+    }                       
+    
+    function GetALlFromBibleChapterBYID($BibleChapterId)
+    {
+        $SELECT_GET_BIBLE_CHAPTER_AND_ID = "SELECT * FROM BibleChapter WHERE Id=".$BibleChapterId;
+        if($this->debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_CHAPTER_AND_ID."<br/>";}
+        $params = array();
+        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+        $result_bible_chapter_getid = sqlsrv_query($this->connection, $SELECT_GET_BIBLE_CHAPTER_AND_ID , $params, $options);   
+        return $result_bible_chapter_getid;
+    }
+    
+    function GetAllFromBibleBookById($BibleBookId)
+    {
+        $SELECT_GET_BIBLE_BOOK = "SELECT * FROM BibleBook WHERE Id=".$BibleBookId;
+        if($this->debug==1){echo "-----SQL QUERY>".$SELECT_GET_BIBLE_BOOK."<br/>";}
+        $params = array();
+        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET);
+        $result_bible_biblebook_details = sqlsrv_query($this->connection, $SELECT_GET_BIBLE_BOOK , $params, $options);
+        
+        return $result_bible_biblebook_details;
     }
 }

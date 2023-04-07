@@ -84,11 +84,6 @@
                 <li><i class="fas fa-map-marker-alt fa-2x"></i>
                     <p>Centurion, WierdaPark, South Africa</p>
                 </li>
-
-                <li><i class="fas fa-phone mt-4 fa-2x"></i>
-                    <p>+27 83 555 5555</p>
-                </li>
-
                 <li><i class="fas fa-envelope mt-4 fa-2x"></i>
                     <p>info@bible4all.org.za</p>
                 </li>
