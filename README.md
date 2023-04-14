@@ -6,5 +6,5 @@
  This is a portal is for Christians, by Christians and also ultimately for the use of Christians. The source code cannot be used for other religions and to be used for its intended purpose. Christianity is exclusive for those who proclaim that JESUS Christ is GOD and Lord and that God raised Him from the dead.
  
 # Importing Bibles to Database
-Be sure to check out this project https://github.com/ReinhardBehrens/ImportBibleXMLintoDatabase to import databases into the database.
+Be sure to check out this project https://github.com/ReinhardBehrens/ImportBibleXMLintoDatabase to import Bibles into the database.
 
